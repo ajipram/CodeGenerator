@@ -12,7 +12,6 @@ import Kode.Maintenance;
 import Kode.Project;
 import Master.MasterAdmin;
 import Model.Model_MenuUtama;
-import static codegenerator.Login.nama;
 import static codegenerator.LupaPassword.email;
 import java.awt.Color;
 import java.sql.Connection;
@@ -43,7 +42,6 @@ public class MenuUtama extends javax.swing.JFrame {
 
     
     Register reg = new Register(new javax.swing.JFrame(),true);
-    Login log = new Login(new javax.swing.JFrame(),true);
     Model_MenuUtama modelUtama = new Model_MenuUtama();
     
     ConnectionHelper conn;
@@ -74,14 +72,8 @@ public class MenuUtama extends javax.swing.JFrame {
         setMenu(false);
         
         miLogout.setEnabled(false);
-        
-        File file = new File(".");
-        for(String fileNames : file.list()) System.out.println(fileNames);
-    
     }
-    
-    
-    
+        
     public void setIconnya(){
         java.net.URL url = ClassLoader.getSystemResource("Image/logopit.png");
         Toolkit kit = Toolkit.getDefaultToolkit();
@@ -125,9 +117,6 @@ public class MenuUtama extends javax.swing.JFrame {
         miLogin.setEnabled(false);
         miLogout.setEnabled(true);
         miRegister.setEnabled(false);
-        namanya = log.getDataNama();
-        System.err.println("namanya "+namanya);
-        txtWelcome.setText("Welcome : "+namanya);
     }
     
     public void setNamanya(String namanya){
@@ -173,10 +162,7 @@ public class MenuUtama extends javax.swing.JFrame {
                 dataEmail = rs.getString(3);
                 dataPass = rs.getString(4);
                 modelUtama.setNama(nama);
-                System.err.println("data email "+dataEmail);
-            } 
-            MenuUtama.nama = nama;
-            System.err.println("data nama = "+nama);
+            }
             rs.close();
             state.close();
             con.close();
@@ -202,12 +188,11 @@ public class MenuUtama extends javax.swing.JFrame {
         txtWelcome = new javax.swing.JLabel();
         txtKoneksi = new javax.swing.JLabel();
         pnlLogin = new javax.swing.JPanel();
+        btnKlik = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtPAss = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        lblKlik = new javax.swing.JLabel();
         btnLogin = new javax.swing.JButton();
         btnRegister = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
@@ -307,6 +292,13 @@ public class MenuUtama extends javax.swing.JFrame {
 
         pnlLogin.setBackground(new java.awt.Color(255, 255, 204));
 
+        btnKlik.setText("Lupa Password");
+        btnKlik.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKlikActionPerformed(evt);
+            }
+        });
+
         jLabel6.setForeground(new java.awt.Color(0, 102, 0));
         jLabel6.setText("Email");
 
@@ -328,23 +320,6 @@ public class MenuUtama extends javax.swing.JFrame {
         txtPAss.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPAssActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel4.setText("Lupa password? ");
-
-        lblKlik.setForeground(new java.awt.Color(0, 51, 153));
-        lblKlik.setText("Klik disini");
-        lblKlik.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblKlikMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                lblKlikMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                lblKlikMouseExited(evt);
             }
         });
 
@@ -372,29 +347,29 @@ public class MenuUtama extends javax.swing.JFrame {
         pnlLogin.setLayout(pnlLoginLayout);
         pnlLoginLayout.setHorizontalGroup(
             pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLoginLayout.createSequentialGroup()
                 .addContainerGap(73, Short.MAX_VALUE)
-                .addGroup(pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(pnlLoginLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlLoginLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(18, 18, 18)
-                        .addGroup(pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLoginLayout.createSequentialGroup()
+                        .addGroup(pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(pnlLoginLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblKlik))
-                            .addGroup(pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlLoginLayout.createSequentialGroup()
-                                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(txtPAss, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(67, 67, 67))
-            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlLoginLayout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(18, 18, 18)
+                                .addGroup(pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlLoginLayout.createSequentialGroup()
+                                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtPAss, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(67, 67, 67))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLoginLayout.createSequentialGroup()
+                        .addComponent(btnKlik)
+                        .addGap(144, 144, 144))))
         );
         pnlLoginLayout.setVerticalGroup(
             pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -413,11 +388,9 @@ public class MenuUtama extends javax.swing.JFrame {
                 .addGroup(pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLogin)
                     .addComponent(btnRegister))
-                .addGap(22, 22, 22)
-                .addGroup(pnlLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(lblKlik))
-                .addGap(17, 17, 17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnKlik)
+                .addGap(11, 11, 11))
         );
 
         jMenuBar1.setBackground(new java.awt.Color(0, 102, 102));
@@ -669,47 +642,36 @@ public class MenuUtama extends javax.swing.JFrame {
     private void txtPAssActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPAssActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPAssActionPerformed
-
-    private void lblKlikMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblKlikMouseClicked
-        
+    JInternalFrame lupa;
+    public void lupaPassword(){
         if(txtEmail.getText().equals("")){
             JOptionPane.showMessageDialog(null,"Email tidak boleh kosong","Error", JOptionPane.INFORMATION_MESSAGE);
         }else{
-        JInternalFrame lupa = new LupaPassword();
-        refresh();
-        if(!dekstop.isAncestorOf(lupa)){
-          
-            dekstop.add(lupa);
-            try{
-                
-                email = txtEmail.getText();
-                dataEmail = email;
-                 System.err.println("data emailnya "+dataEmail);               
-                System.err.println("emailnya "+email);
-                lupa.setSelected(true);
-                lupa.setVisible(true);
-                //refresh();
-                //mMAdmin.setSize(800, 600);
-                Dimension desktopSize = dekstop.getSize();
-                Dimension jInternalFrameSize = lupa.getSize();
-                lupa.setLocation((desktopSize.width - jInternalFrameSize.width)/2,((desktopSize.height- jInternalFrameSize.height)-20)/2);
-            
-            }catch (Exception e){
-                System.err.println(e.getMessage());
-            }     
-        }
-        }
-        
-    }//GEN-LAST:event_lblKlikMouseClicked
+            if(!dekstop.isAncestorOf(lupa)){
+                lupa = new LupaPassword();
+                dekstop.add(lupa);
+                try{
+                    email = txtEmail.getText();
+                    validasi(email);
+                    lupa.setSelected(true);
+                    lupa.setVisible(true);
+                    Dimension desktopSize = dekstop.getSize();
+                    Dimension jInternalFrameSize = lupa.getSize();
+                    lupa.setLocation((desktopSize.width - jInternalFrameSize.width)/2,((desktopSize.height- jInternalFrameSize.height)-100)/2);
 
+                }catch (Exception e){
+                    System.err.println(e.getMessage());
+                }     
+            }
+        }
+    }
+    
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
 
         email = txtEmail.getText();
         password  = txtPAss.getText();
-        
         validasi(email);
 
-        System.err.println("data email = "+email);
         if(email.equals("") || password.equals("")){
             JOptionPane.showMessageDialog(null,"Data tidak boleh kosong","Error", JOptionPane.INFORMATION_MESSAGE);
         }else if(validasiEmail(email)== false){
@@ -723,14 +685,11 @@ public class MenuUtama extends javax.swing.JFrame {
         }else{
 
             login();
-            //MenuUtama mu = new MenuUtama();
             setMenu(true);
             setNamanya(nama);
             modelUtama.setNama(nama);
             pnlLogin.hide();
-
-            System.err.println("namnya kok erorr mulu"+nama);
-            JOptionPane.showMessageDialog(null,"Login Berhasil","Error", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Login Berhasil","Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
@@ -777,14 +736,33 @@ public class MenuUtama extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_miEmergencyActionPerformed
+    
+    JInternalFrame mUbahPass;
+    private void btnKlikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKlikActionPerformed
+        if(txtEmail.getText().equals("")){
+            JOptionPane.showMessageDialog(null,"Email tidak boleh kosong","Error", JOptionPane.INFORMATION_MESSAGE);
+        }else if(validasiEmail(txtEmail.getText())== false){
+            JOptionPane.showMessageDialog(null,"Format email salah","Error", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            refresh();
+            email = txtEmail.getText();
+            validasi(email);
+            if(!dekstop.isAncestorOf(mUbahPass)){
+                mUbahPass = new UbahPassword();
+                dekstop.add(mUbahPass);
+                try{
+                    mUbahPass.setSelected(true);
+                    mUbahPass.setVisible(true);
+                    Dimension desktopSize = dekstop.getSize();
+                    Dimension jInternalFrameSize = mUbahPass.getSize();
+                    mUbahPass.setLocation((desktopSize.width - jInternalFrameSize.width)/2,((desktopSize.height- jInternalFrameSize.height))/2);
 
-    private void lblKlikMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblKlikMouseEntered
-        lblKlik.setSize(60, 20);
-    }//GEN-LAST:event_lblKlikMouseEntered
-
-    private void lblKlikMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblKlikMouseExited
-        lblKlik.setSize(54, 16);
-    }//GEN-LAST:event_lblKlikMouseExited
+                }catch (Exception e){
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+    }//GEN-LAST:event_btnKlikActionPerformed
 
     /**
      * @param args the command line arguments
@@ -854,13 +832,13 @@ public class MenuUtama extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnKlik;
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnRegister;
     private javax.swing.JDesktopPane dekstop;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -869,7 +847,6 @@ public class MenuUtama extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JLabel lblKlik;
     private javax.swing.JMenu mHome;
     private javax.swing.JMenu mKode;
     private javax.swing.JMenu mMaster;
