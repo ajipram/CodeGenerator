@@ -31,7 +31,7 @@ public class Database {
         }catch(IOException e){
             JOptionPane.showMessageDialog(null,"Tidak ada koneksi","Error", JOptionPane.INFORMATION_MESSAGE);
             System.err.println(e.getMessage());
-            System.exit(0);
+            //System.exit(0);
         }
         return strNamaPanel;
     }

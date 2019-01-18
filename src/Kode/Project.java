@@ -45,13 +45,13 @@ import javax.swing.table.TableRowSorter;
  *
  * @author AJI-PC
  */
-public class Maintenance extends javax.swing.JInternalFrame {
+public class Project extends javax.swing.JInternalFrame {
     int nomor;
     JLabel jl;
     
     Database dbsetting;
     String driver, database, user, pass;
-    String no, kode, nama, jenis = "MNT";
+    String no, kode, nama, jenis = "PRJ";
     String kdCust, nmCust, telp, kdCab, nmCab, kdWil, nmWil, kdAdm, nmAdm;
     Boolean dikunjungi;
     Float notelp;
@@ -89,7 +89,6 @@ public class Maintenance extends javax.swing.JInternalFrame {
         String strCab = String.valueOf(cmbCabang.getSelectedItem());
         String strWil = String.valueOf(cmbWilayah.getSelectedItem());
         String strMit = String.valueOf(cmbMitra.getSelectedItem());
-        //MenuUtama mu = new MenuUtama();
         
         isi[0] = txtNoKode.getText();
         isi[1] = txtNoBukti.getText();
@@ -114,7 +113,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
     /**
      * Creates new form Setting
      */
-    public Maintenance() {
+    public Project() {
         initComponents();
         
         dbsetting = new Database();
@@ -161,7 +160,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
             
-            String query = "Select MAX(No_Kode) from HMaintenance"; 
+            String query = "Select MAX(No_Kode) from HProject"; 
             ResultSet rs = state.executeQuery(query);
             int max = 0;
             while(rs.next()){
@@ -178,7 +177,8 @@ public class Maintenance extends javax.swing.JInternalFrame {
         return no;
     }
     
-    public void setCellsAlignment(){
+    public void setCellsAlignment()
+    {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         for (int columnIndex = 0; columnIndex <tblModel.getColumnCount(); columnIndex++){
@@ -191,7 +191,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
-            String query = "Select * from HMaintenance"; 
+            String query = "Select * from HProject"; 
             ResultSet rs = state.executeQuery(query);
             
             while(rs.next()){
@@ -232,7 +232,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
             tblModel.setRowCount(0);
-            String query = "Select * from HMaintenance where "+ namakolom +" like '%"+ key +"%'"; 
+            String query = "Select * from KDMaintenance where "+ namakolom +" like '%"+ key +"%'"; 
             ResultSet rs = state.executeQuery(query);
             while(rs.next()){
                 int nokod = Integer.parseInt(rs.getString(1));
@@ -417,6 +417,14 @@ public class Maintenance extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         lblTanggal = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelKode = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        txtKeyword = new javax.swing.JTextField();
+        cmbCari = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        btnCari = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnCariCustomer = new javax.swing.JButton();
@@ -445,14 +453,6 @@ public class Maintenance extends javax.swing.JInternalFrame {
         btnGenerate = new javax.swing.JButton();
         txtNoBukti = new javax.swing.JTextField();
         btnCopy = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tabelKode = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        txtKeyword = new javax.swing.JTextField();
-        cmbCari = new javax.swing.JComboBox<>();
-        jLabel5 = new javax.swing.JLabel();
-        btnCari = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setTitle("Kode Maintenance");
@@ -465,6 +465,96 @@ public class Maintenance extends javax.swing.JInternalFrame {
 
         lblTanggal.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         lblTanggal.setText("tgl");
+
+        tabelKode.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tabelKode.setForeground(new java.awt.Color(0, 102, 102));
+        tabelKode.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Nomor", "Nomor Bukti", "Tanggal", "Admin"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tabelKode.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelKodeMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabelKode);
+
+        jLabel1.setBackground(new java.awt.Color(0, 153, 153));
+        jLabel1.setForeground(new java.awt.Color(204, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Kode Project");
+        jLabel1.setOpaque(true);
+
+        jPanel3.setBackground(new java.awt.Color(0, 102, 102));
+        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        txtKeyword.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                txtKeywordInputMethodTextChanged(evt);
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+        });
+
+        cmbCari.setForeground(new java.awt.Color(0, 102, 102));
+        cmbCari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Bukti", "Tanggal" }));
+
+        jLabel5.setForeground(new java.awt.Color(204, 255, 255));
+        jLabel5.setText("Cari :");
+
+        btnCari.setForeground(new java.awt.Color(0, 153, 153));
+        btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/cari.png"))); // NOI18N
+        btnCari.setText("Cari");
+        btnCari.setMaximumSize(new java.awt.Dimension(85, 35));
+        btnCari.setMinimumSize(new java.awt.Dimension(85, 35));
+        btnCari.setPreferredSize(new java.awt.Dimension(85, 35));
+        btnCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmbCari, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10))
+        );
 
         jPanel2.setBackground(new java.awt.Color(0, 102, 102));
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -649,16 +739,18 @@ public class Maintenance extends javax.swing.JInternalFrame {
                                     .addComponent(jLabel4))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(txtCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel12))
-                                    .addComponent(txtNoKode, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                         .addComponent(cmbCabang, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel8)))
-                                .addGap(6, 6, 6))
+                                        .addComponent(jLabel8)
+                                        .addGap(6, 6, 6))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtNoKode, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel12)
+                                        .addGap(12, 12, 12))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -719,9 +811,9 @@ public class Maintenance extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmbMitra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9)
                             .addComponent(jLabel7)
-                            .addComponent(cmbWilayah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9)))
+                            .addComponent(cmbWilayah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtTeknisi1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -741,96 +833,6 @@ public class Maintenance extends javax.swing.JInternalFrame {
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        tabelKode.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        tabelKode.setForeground(new java.awt.Color(0, 102, 102));
-        tabelKode.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Nomor", "Nomor Bukti", "Tanggal", "Admin"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        tabelKode.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabelKodeMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tabelKode);
-
-        jLabel1.setBackground(new java.awt.Color(0, 153, 153));
-        jLabel1.setForeground(new java.awt.Color(204, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Kode Maintenance ");
-        jLabel1.setOpaque(true);
-
-        jPanel3.setBackground(new java.awt.Color(0, 102, 102));
-        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        txtKeyword.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                txtKeywordInputMethodTextChanged(evt);
-            }
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
-        });
-
-        cmbCari.setForeground(new java.awt.Color(0, 102, 102));
-        cmbCari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Bukti", "Tanggal" }));
-
-        jLabel5.setForeground(new java.awt.Color(204, 255, 255));
-        jLabel5.setText("Cari :");
-
-        btnCari.setForeground(new java.awt.Color(0, 153, 153));
-        btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/cari.png"))); // NOI18N
-        btnCari.setText("Cari");
-        btnCari.setMaximumSize(new java.awt.Dimension(85, 35));
-        btnCari.setMinimumSize(new java.awt.Dimension(85, 35));
-        btnCari.setPreferredSize(new java.awt.Dimension(85, 35));
-        btnCari.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCariActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbCari, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -846,11 +848,11 @@ public class Maintenance extends javax.swing.JInternalFrame {
                         .addComponent(lblTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(27, 27, 27)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1))
-                        .addGap(0, 73, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 740, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 67, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -865,7 +867,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(8, 8, 8)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -874,45 +876,8 @@ public class Maintenance extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtNoBuktiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNoBuktiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNoBuktiActionPerformed
-
-    private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
-        // TODO add your handling code here:
-        if(txtCustomer.getText().equals("")){
-            JOptionPane.showMessageDialog(this, "Customer tidak boleh kosong", "Perhatian", JOptionPane.INFORMATION_MESSAGE);
-        }else{
-            
-            String nomor = String.valueOf(autonumber());
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMM");
-            LocalDateTime now = LocalDateTime.now();
-            String date = dtf.format(now);
-            txtNoBukti.setText(kdCust+"-"+kdCab+"-"+jenis+"-"+date+nomor);
-            btnSimpan.setEnabled(true);
-            btnBatal.setEnabled(true);
-        }
-    }//GEN-LAST:event_btnGenerateActionPerformed
-
-    private void btnCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCopyActionPerformed
-      
-        StringSelection stringSelection = new StringSelection(txtNoBukti.getText());
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(stringSelection, null);
-    }//GEN-LAST:event_btnCopyActionPerformed
     
-    String kodeCust, namaCust;
-    private void btnCariCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariCustomerActionPerformed
-        
-        popCustomer.setVisible(true);
-        kdCust = popCustomer.getKode();
-        nmCust = popCustomer.getNama();
-        txtCustomer.setText(kdCust+" : "+nmCust);
-        getTelp(kdCust);
-        System.err.println(kdCust);
-    }//GEN-LAST:event_btnCariCustomerActionPerformed
-    
+    String kodeCust, namaCust;    
     String[] sim = new String[7];
     private void tabelKodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelKodeMouseClicked
         if(evt.getClickCount()==2){
@@ -939,26 +904,15 @@ public class Maintenance extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_txtKeywordInputMethodTextChanged
 
-    private void btnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeluarActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_btnKeluarActionPerformed
+    private void btnCariCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariCustomerActionPerformed
 
-    private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
-        clear();
-    }//GEN-LAST:event_btnBatalActionPerformed
-
-    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
-        if (JOptionPane.showConfirmDialog(null, "Yakin akan menghapus?", "Peringatan",
-            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            try{
-                query.Hapus("HMaintenance", "No_Kode", txtNoKode.getText());
-                tblModel.removeRow(row);
-                clear();
-            }catch(Exception e){
-                System.err.println("errorr"+e.getMessage());
-            }
-        }
-    }//GEN-LAST:event_btnHapusActionPerformed
+        popCustomer.setVisible(true);
+        kdCust = popCustomer.getKode();
+        nmCust = popCustomer.getNama();
+        txtCustomer.setText(kdCust+" : "+nmCust);
+        getTelp(kdCust);
+        System.err.println(kdCust);
+    }//GEN-LAST:event_btnCariCustomerActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         if(txtNoKode.equals("")){
@@ -970,8 +924,8 @@ public class Maintenance extends javax.swing.JInternalFrame {
         }else{
             try{
                 lblTanggal.setText(datetime("dd/MMM/yyyy HH:mm:ss"));
-                query.Input_Detil(Kolom(), Data(), "HMaintenance");
-                                
+                query.Input_Detil(Kolom(), Data(), "HEmergency");
+
                 int rowCount = tblModel.getRowCount();
                 for (int i = rowCount - 1; i >= 0; i--) {
                     tblModel.removeRow(i);
@@ -984,6 +938,54 @@ public class Maintenance extends javax.swing.JInternalFrame {
         }
         clear();
     }//GEN-LAST:event_btnSimpanActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        if (JOptionPane.showConfirmDialog(null, "Yakin akan menghapus?", "Peringatan",
+            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        try{
+            query.Hapus("HEmergency", "No_Kode", txtNoKode.getText());
+            tblModel.removeRow(row);
+            clear();
+        }catch(Exception e){
+            System.err.println("errorr"+e.getMessage());
+        }
+        }
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
+        clear();
+    }//GEN-LAST:event_btnBatalActionPerformed
+
+    private void btnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeluarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnKeluarActionPerformed
+
+    private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
+        // TODO add your handling code here:
+        if(txtCustomer.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "Customer tidak boleh kosong", "Perhatian", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+
+            String nomor = String.valueOf(autonumber());
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMM");
+            LocalDateTime now = LocalDateTime.now();
+            String date = dtf.format(now);
+            txtNoBukti.setText(kdCust+"-"+kdCab+"-"+jenis+"-"+date+nomor);
+            btnSimpan.setEnabled(true);
+            btnBatal.setEnabled(true);
+        }
+    }//GEN-LAST:event_btnGenerateActionPerformed
+
+    private void txtNoBuktiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNoBuktiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNoBuktiActionPerformed
+
+    private void btnCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCopyActionPerformed
+
+        StringSelection stringSelection = new StringSelection(txtNoBukti.getText());
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }//GEN-LAST:event_btnCopyActionPerformed
 
     int row = 0;
     String kodenya;
@@ -1000,7 +1002,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
-            String query = "Select * from HMaintenance where No_Kode = '" + kode + "'"; 
+            String query = "Select * from HProject where No_Kode = '" + kode + "'"; 
             ResultSet rs = state.executeQuery(query);
             while(rs.next()){
                 txtCustomer.setText(rs.getString(3)+" : "+rs.getString(4));

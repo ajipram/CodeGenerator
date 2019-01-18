@@ -45,13 +45,13 @@ import javax.swing.table.TableRowSorter;
  *
  * @author AJI-PC
  */
-public class Maintenance extends javax.swing.JInternalFrame {
+public class Emergency extends javax.swing.JInternalFrame {
     int nomor;
     JLabel jl;
     
     Database dbsetting;
     String driver, database, user, pass;
-    String no, kode, nama, jenis = "MNT";
+    String no, kode, nama, jenis = "EMG";
     String kdCust, nmCust, telp, kdCab, nmCab, kdWil, nmWil, kdAdm, nmAdm;
     Boolean dikunjungi;
     Float notelp;
@@ -89,7 +89,6 @@ public class Maintenance extends javax.swing.JInternalFrame {
         String strCab = String.valueOf(cmbCabang.getSelectedItem());
         String strWil = String.valueOf(cmbWilayah.getSelectedItem());
         String strMit = String.valueOf(cmbMitra.getSelectedItem());
-        //MenuUtama mu = new MenuUtama();
         
         isi[0] = txtNoKode.getText();
         isi[1] = txtNoBukti.getText();
@@ -104,7 +103,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
         isi[10] = txtTeknisi1.getText();
         isi[11] = txtTeknisi2.getText();
         isi[12] = MenuUtama.getId();
-        isi[13] = MenuUtama.getNama();
+        isi[13] = MenuUtama.getNama();;
         isi[14] = lblTanggal.getText();
         isi[15] = strMit.substring(0, strMit.indexOf(" : "));
         isi[16] = strMit.substring(strMit.lastIndexOf(" : ")+2);
@@ -114,7 +113,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
     /**
      * Creates new form Setting
      */
-    public Maintenance() {
+    public Emergency() {
         initComponents();
         
         dbsetting = new Database();
@@ -161,7 +160,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
             
-            String query = "Select MAX(No_Kode) from HMaintenance"; 
+            String query = "Select MAX(No_Kode) from HEmergency"; 
             ResultSet rs = state.executeQuery(query);
             int max = 0;
             while(rs.next()){
@@ -178,7 +177,8 @@ public class Maintenance extends javax.swing.JInternalFrame {
         return no;
     }
     
-    public void setCellsAlignment(){
+    public void setCellsAlignment()
+    {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         for (int columnIndex = 0; columnIndex <tblModel.getColumnCount(); columnIndex++){
@@ -191,7 +191,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
-            String query = "Select * from HMaintenance"; 
+            String query = "Select * from HEmergency"; 
             ResultSet rs = state.executeQuery(query);
             
             while(rs.next()){
@@ -232,7 +232,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
             tblModel.setRowCount(0);
-            String query = "Select * from HMaintenance where "+ namakolom +" like '%"+ key +"%'"; 
+            String query = "Select * from KDMaintenance where "+ namakolom +" like '%"+ key +"%'"; 
             ResultSet rs = state.executeQuery(query);
             while(rs.next()){
                 int nokod = Integer.parseInt(rs.getString(1));
@@ -649,16 +649,18 @@ public class Maintenance extends javax.swing.JInternalFrame {
                                     .addComponent(jLabel4))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(txtCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel12))
-                                    .addComponent(txtNoKode, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                         .addComponent(cmbCabang, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel8)))
-                                .addGap(6, 6, 6))
+                                        .addComponent(jLabel8)
+                                        .addGap(6, 6, 6))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtNoKode, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel12)
+                                        .addGap(12, 12, 12))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -719,9 +721,9 @@ public class Maintenance extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmbMitra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9)
                             .addComponent(jLabel7)
-                            .addComponent(cmbWilayah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9)))
+                            .addComponent(cmbWilayah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtTeknisi1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -772,7 +774,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
         jLabel1.setBackground(new java.awt.Color(0, 153, 153));
         jLabel1.setForeground(new java.awt.Color(204, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Kode Maintenance ");
+        jLabel1.setText("Kode Emergency");
         jLabel1.setOpaque(true);
 
         jPanel3.setBackground(new java.awt.Color(0, 102, 102));
@@ -850,7 +852,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
                             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1))
-                        .addGap(0, 73, Short.MAX_VALUE)))
+                        .addGap(0, 76, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -951,7 +953,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
         if (JOptionPane.showConfirmDialog(null, "Yakin akan menghapus?", "Peringatan",
             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try{
-                query.Hapus("HMaintenance", "No_Kode", txtNoKode.getText());
+                query.Hapus("HEmergency", "No_Kode", txtNoKode.getText());
                 tblModel.removeRow(row);
                 clear();
             }catch(Exception e){
@@ -970,7 +972,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
         }else{
             try{
                 lblTanggal.setText(datetime("dd/MMM/yyyy HH:mm:ss"));
-                query.Input_Detil(Kolom(), Data(), "HMaintenance");
+                query.Input_Detil(Kolom(), Data(), "HEmergency");
                                 
                 int rowCount = tblModel.getRowCount();
                 for (int i = rowCount - 1; i >= 0; i--) {
@@ -1000,7 +1002,7 @@ public class Maintenance extends javax.swing.JInternalFrame {
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
-            String query = "Select * from HMaintenance where No_Kode = '" + kode + "'"; 
+            String query = "Select * from HEmergency where No_Kode = '" + kode + "'"; 
             ResultSet rs = state.executeQuery(query);
             while(rs.next()){
                 txtCustomer.setText(rs.getString(3)+" : "+rs.getString(4));

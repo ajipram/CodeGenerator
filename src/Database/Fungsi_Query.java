@@ -75,8 +75,10 @@ public class Fungsi_Query {
             stt.executeUpdate(sql);
             stt.close();
             con.close();
+            JOptionPane.showMessageDialog(null,"Data tersimpan","Info", JOptionPane.INFORMATION_MESSAGE);
         }catch (Exception e){
             System.err.println(e.getMessage());
+            JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.INFORMATION_MESSAGE);
         }
     }
     
@@ -89,8 +91,10 @@ public class Fungsi_Query {
             stt.executeUpdate(sql);
             stt.close();
             con.close();
+            JOptionPane.showMessageDialog(null,"Data berhasil dihapus","Info", JOptionPane.INFORMATION_MESSAGE);
         }catch (Exception e){
             System.err.println(e.getMessage());
+            JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.INFORMATION_MESSAGE);
         }
     }
     
