@@ -293,22 +293,22 @@ public class MasterAdmin extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabel = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(153, 0, 0));
+        setBackground(new java.awt.Color(153, 204, 255));
         setTitle("Kode Maintenance");
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setBackground(new java.awt.Color(153, 0, 0));
-        jLabel1.setForeground(new java.awt.Color(255, 153, 153));
+        jLabel1.setBackground(new java.awt.Color(153, 204, 255));
+        jLabel1.setForeground(new java.awt.Color(0, 51, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Master Admin");
         jLabel1.setOpaque(true);
         jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
 
-        jPanel4.setBackground(new java.awt.Color(102, 0, 0));
+        jPanel4.setBackground(new java.awt.Color(51, 153, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jLabel2.setForeground(new java.awt.Color(255, 153, 153));
+        jLabel2.setForeground(new java.awt.Color(0, 51, 204));
         jLabel2.setText("Kode Admin");
 
         txtKode.setEnabled(false);
@@ -316,25 +316,25 @@ public class MasterAdmin extends javax.swing.JInternalFrame {
 
         txtNama.setNextFocusableComponent(txtEmail);
 
-        jLabel3.setForeground(new java.awt.Color(255, 153, 153));
+        jLabel3.setForeground(new java.awt.Color(0, 51, 204));
         jLabel3.setText("Nama Admin");
 
-        jLabel4.setForeground(new java.awt.Color(255, 153, 153));
+        jLabel4.setForeground(new java.awt.Color(0, 51, 204));
         jLabel4.setText("Password");
 
-        jLabel5.setForeground(new java.awt.Color(255, 153, 153));
+        jLabel5.setForeground(new java.awt.Color(0, 51, 204));
         jLabel5.setText("Jawaban");
 
         txtJawaban.setNextFocusableComponent(btnSimpan);
 
         txtPassword.setNextFocusableComponent(cmbTanya);
 
-        jLabel6.setForeground(new java.awt.Color(255, 153, 153));
+        jLabel6.setForeground(new java.awt.Color(0, 51, 204));
         jLabel6.setText("Email");
 
         txtEmail.setNextFocusableComponent(txtPassword);
 
-        jLabel7.setForeground(new java.awt.Color(255, 153, 153));
+        jLabel7.setForeground(new java.awt.Color(0, 51, 204));
         jLabel7.setText("Pertanyaan");
 
         cmbTanya.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nama Ibu Kandung?", "Nama Kota Kelahiran?", "Judul Film Favorit?" }));
@@ -400,7 +400,7 @@ public class MasterAdmin extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(102, 0, 0));
+        jPanel2.setBackground(new java.awt.Color(51, 153, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         btnHapus.setForeground(new java.awt.Color(0, 153, 153));
@@ -482,7 +482,7 @@ public class MasterAdmin extends javax.swing.JInternalFrame {
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
-        jPanel3.setBackground(new java.awt.Color(102, 0, 0));
+        jPanel3.setBackground(new java.awt.Color(51, 153, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         txtKeyword.addInputMethodListener(new java.awt.event.InputMethodListener() {
@@ -497,7 +497,7 @@ public class MasterAdmin extends javax.swing.JInternalFrame {
         cmbCari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kode", "Nama" }));
         cmbCari.setToolTipText("");
 
-        jLabel8.setForeground(new java.awt.Color(255, 153, 153));
+        jLabel8.setForeground(new java.awt.Color(0, 51, 204));
         jLabel8.setText("Cari :");
 
         btnCari.setForeground(new java.awt.Color(51, 51, 51));
@@ -539,6 +539,7 @@ public class MasterAdmin extends javax.swing.JInternalFrame {
                 .addGap(10, 10, 10))
         );
 
+        tabel.setBackground(new java.awt.Color(153, 204, 255));
         tabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
