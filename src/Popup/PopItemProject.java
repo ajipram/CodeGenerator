@@ -7,6 +7,7 @@ package Popup;
 
 import Database.Database;
 import Kode.Maintenance;
+import Kode.Project;
 import codegenerator.MenuUtama;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +17,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,15 +26,16 @@ import javax.swing.table.DefaultTableCellRenderer;
  *
  * @author AJI-PC
  */
-public class PopCustomer extends javax.swing.JDialog {
+public class PopItemProject extends javax.swing.JDialog {
 
     Database dbsetting;
     String driver, database, user, pass;
-    String kode, nama;
-    String data[] = new String[2];
+    String no, noseri, produk, merk, model, sizenya,nobukti;
+    String data[] = new String[6];
     Maintenance main;
+    Project project;
     
-    public PopCustomer(java.awt.Frame parent, boolean modal) {
+    public PopItemProject(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         
@@ -49,32 +52,45 @@ public class PopCustomer extends javax.swing.JDialog {
         
         
         tabelCustomer.setModel(tblModel);
-        Tabel(tabelCustomer, new int[]{200,300});
+        Tabel(tabelCustomer, new int[]{100,150,100,100,100,100});
         tabelCustomer.setAutoCreateRowSorter(true);
-        tampilCustomer();
+        tampilItem();
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( SwingConstants.CENTER );
         tabelCustomer.getColumnModel().getColumn(0).setCellRenderer( centerRenderer );
         tabelCustomer.getTableHeader().setBackground(Color.decode("#ffbf80"));
+        nobukti = Project.getNoBukti();
+        System.err.println("rownya "+row);
+        tabelCustomer.remove(row);
     }
     
-    private void tampilCustomer(){
+    private void tampilItem(){
         try{
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
-            String query = "Select * from MHCustomer"; 
+            String query = "Select * from ItemProject where NoBukti is null or NoBukti = ''"; 
             ResultSet rs = state.executeQuery(query);
-            
+            if(rs.next()==false){
+                JOptionPane.showMessageDialog(null,"Tidak ada data","Info",JOptionPane.INFORMATION_MESSAGE);
+            }else{
             while(rs.next()){
                 data[0] = rs.getString(1);
                 data[1] = rs.getString(2);
+                data[2] = rs.getString(3);
+                data[3] = rs.getString(4);
+                data[4] = rs.getString(5);
+                data[5] = rs.getString(6);
                 
                 tblModel.addRow(data);
+            }
+            
+                
             }
             rs.close();
             state.close();
             con.close();
+            
         }catch(Exception ex){
             System.out.println("tidak ada koneksi "+ex);
 	}
@@ -86,12 +102,16 @@ public class PopCustomer extends javax.swing.JDialog {
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
             tblModel.setRowCount(0);
-            String query = "Select * from MHCustomer where "+ cmb +" like '%"+ key +"%'"; 
+            String query = "Select * from ItemProject where "+ cmb +" like '%"+ key +"%', where Nobukti is null"; 
             ResultSet rs = state.executeQuery(query);
             System.err.println(query);
             while(rs.next()){
                 data[0] = rs.getString(1);
                 data[1] = rs.getString(2);
+                data[2] = rs.getString(3);
+                data[3] = rs.getString(4);
+                data[4] = rs.getString(5);
+                data[5] = rs.getString(6);
                 
                 tblModel.addRow(data);
             }
@@ -116,10 +136,9 @@ public class PopCustomer extends javax.swing.JDialog {
     private javax.swing.table.DefaultTableModel getDefaultTabelModel(){
         return new javax.swing.table.DefaultTableModel(
         new Object[][] {},
-        new String[] {"Kode Customer", "Nama Customer"}
-        ){
+        new String[] {"No Urut", "Nomor Seri", "Produk", "Merk", "Model", "Size"}){
             boolean[] canEdit = new boolean[]{
-                false,false
+                false,false,false,false,false,false
             };
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
@@ -159,7 +178,7 @@ public class PopCustomer extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Rockwell", 1, 16)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 51, 0));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Data Customer");
+        jLabel1.setText("Item Project");
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 153));
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -169,7 +188,7 @@ public class PopCustomer extends javax.swing.JDialog {
         jLabel2.setText("Cari berdasarkan");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(19, 14, -1, -1));
 
-        cmbCari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kode", "Nama" }));
+        cmbCari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Seri", "Produk", "Merk" }));
         jPanel1.add(cmbCari, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 9, 75, -1));
 
         jLabel3.setForeground(new java.awt.Color(204, 51, 0));
@@ -195,17 +214,17 @@ public class PopCustomer extends javax.swing.JDialog {
         tabelCustomer.setForeground(new java.awt.Color(0, 0, 0));
         tabelCustomer.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Kode", "Nama"
+                "Nomor", "No Seri", "Produk", "Merk", "null"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -275,6 +294,7 @@ public class PopCustomer extends javax.swing.JDialog {
         if(evt.getClickCount() == 2){
             getData();
             dispose();
+            
         }
     }//GEN-LAST:event_tabelCustomerMouseClicked
 
@@ -289,25 +309,52 @@ public class PopCustomer extends javax.swing.JDialog {
     private void tabelCustomerKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabelCustomerKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
             getData();
+            dispose();
         }
         
     }//GEN-LAST:event_tabelCustomerKeyPressed
 
     JTextField txtkode, txtnama;
     int row = 0;
+    String tempNoseri;
     public void getData() {
-        row = tabelCustomer.getSelectedRow();
-        kode = tblModel.getValueAt(row, 0).toString();
-        nama = tblModel.getValueAt(row, 1).toString();    
+        row     = tabelCustomer.getSelectedRow();
+        no      = tblModel.getValueAt(row, 0).toString();
+        noseri  = tblModel.getValueAt(row, 1).toString();    
+        produk  = tblModel.getValueAt(row, 2).toString();   
+        merk    = tblModel.getValueAt(row, 3).toString();   
+        model   = tblModel.getValueAt(row, 4).toString();   
+        sizenya = tblModel.getValueAt(row, 5).toString();
+        //tempNoseri = noseri;
+        
+        System.out.println("get no seri getdata "+noseri);
         this.dispose();
+        
     }
 
-    public String getKode() {
-        return kode;
+    public String getNo() {
+        return no;
     }
 
-    public String getNama() {
-        return nama;
+    public String getNoseri() {
+        System.out.println("get no seri get "+noseri);
+        return noseri;
+    }
+    
+    public String getProduk() {
+        return produk;
+    }
+
+    public String getMerk() {
+        return merk;
+    }
+    
+    public String getModel() {
+        return model;
+    }
+
+    public String getSizenya() {
+        return sizenya;
     }
     
     /**
@@ -327,14 +374,15 @@ public class PopCustomer extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PopCustomer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PopItemProject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PopCustomer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PopItemProject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PopCustomer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PopItemProject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PopCustomer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PopItemProject.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
@@ -342,7 +390,7 @@ public class PopCustomer extends javax.swing.JDialog {
             public void run() {
                 
                 
-                PopCustomer dialog = new PopCustomer(new javax.swing.JFrame(), true);
+                PopItemProject dialog = new PopItemProject(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);

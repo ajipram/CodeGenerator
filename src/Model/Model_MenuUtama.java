@@ -13,13 +13,11 @@ public class Model_MenuUtama {
     private static String nama;
 
     public String getNama() {
-        System.err.println("susah getNama"+nama);
         return nama;
     }
 
     public void setNama(String nama) {
         this.nama = nama;
-        System.err.println("susah setNama"+this.nama);
     }
     
 }

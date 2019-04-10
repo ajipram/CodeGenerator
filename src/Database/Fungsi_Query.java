@@ -29,7 +29,7 @@ public class Fungsi_Query {
         user      = dbsetting.SettingPanel("DBUsername");
         pass      = dbsetting.SettingPanel("DBPassword");
     }
-    
+ /*   
     public void Input_Detil(String[] kolom, String[] isi, String nmtable){
         try{
             String sql = "INSERT INTO " +nmtable+ " ( ";
@@ -46,7 +46,37 @@ public class Fungsi_Query {
                     sql+=",";
             }
             sql+=")";
-            System.err.println(sql);
+            System.err.println("sql input "+sql);
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(database, user, pass);
+            Statement stt = con.createStatement();
+            stt.executeUpdate(sql);
+            stt.close();
+            con.close();
+            JOptionPane.showMessageDialog(null,"Data tersimpan","Info", JOptionPane.INFORMATION_MESSAGE);
+        }catch(Exception e){
+            System.err.println(e.getMessage());
+            JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.INFORMATION_MESSAGE);
+        }  
+    }
+ */   
+    public void Input_Detil(String[] kolom, String[] isi, String nmtable){
+        try{
+            String sql = "INSERT INTO " +nmtable+ " ( ";
+            for(int i=0;i<kolom.length;i++){
+                sql+=kolom[i];
+                if(i<kolom.length-1)
+                    sql+=",";
+            
+            }
+            sql+=") values (";
+            for(int i=0;i<kolom.length;i++){
+                sql+=" '"+isi[i]+"' ";
+                if(i<kolom.length-1)
+                    sql+=",";
+            }
+            sql+=")";
+            System.err.println("sql input "+sql);
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement stt = con.createStatement();
@@ -69,13 +99,33 @@ public class Fungsi_Query {
                     sql+=",";
             }
             sql+="Where "+primarykey+" = '"+data+"' ";
+            System.err.println("sql = "+sql);
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement stt = con.createStatement();
             stt.executeUpdate(sql);
             stt.close();
             con.close();
-            JOptionPane.showMessageDialog(null,"Data tersimpan","Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Data berhasil diubah","Info", JOptionPane.INFORMATION_MESSAGE);
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+            JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
+    public void EditSingle(String kolom, String isi, String nmtable, String primarykey, String data){
+        try{
+            String sql = "Update "+nmtable+" set "+kolom+" = '"+isi+"' ";
+            
+            sql+="Where "+primarykey+" = '"+data+"' ";
+            System.err.println("sql = "+sql);
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(database, user, pass);
+            Statement stt = con.createStatement();
+            stt.executeUpdate(sql);
+            stt.close();
+            con.close();
+            JOptionPane.showMessageDialog(null,"Data berhasil diubah","Info", JOptionPane.INFORMATION_MESSAGE);
         }catch (Exception e){
             System.err.println(e.getMessage());
             JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.INFORMATION_MESSAGE);
@@ -91,7 +141,6 @@ public class Fungsi_Query {
             stt.executeUpdate(sql);
             stt.close();
             con.close();
-            JOptionPane.showMessageDialog(null,"Data berhasil dihapus","Info", JOptionPane.INFORMATION_MESSAGE);
         }catch (Exception e){
             System.err.println(e.getMessage());
             JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.INFORMATION_MESSAGE);
