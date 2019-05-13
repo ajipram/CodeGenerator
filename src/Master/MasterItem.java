@@ -37,11 +37,11 @@ public class MasterItem extends javax.swing.JInternalFrame {
     Boolean dikunjungi;
     Float notelp;
     
-    String data[] = new String[6];
+    String data[] = new String[7];
     Fungsi_Query query = new Fungsi_Query();
     
-    String[] kolom  = new String[6];
-    String[] isi    = new String[6];
+    String[] kolom  = new String[7];
+    String[] isi    = new String[7];
     
     public String[] Kolom(){
         kolom[0] = "NoUrut";
@@ -49,7 +49,8 @@ public class MasterItem extends javax.swing.JInternalFrame {
         kolom[2] = "Produk";
         kolom[3] = "Merk";
         kolom[4] = "Tipe";
-        kolom[5] = "size";
+        kolom[5] = "Size";
+        kolom[6] = "NoBukti";
      
         return kolom;
     }
@@ -62,6 +63,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
         isi[3] = txtMerk.getText();
         isi[4] = txtModel.getText();
         isi[5] = txtSize.getText();
+        isi[6] = "";
         return isi;
     }
     
@@ -76,7 +78,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
         
         tabel.setModel(tblModel);
         tabel.setAutoCreateRowSorter(true);
-        Tabel(tabel, new int[]{100,150,100,100,100,100});
+        Tabel(tabel, new int[]{100,150,100,100,100,100,100});
         sortTable();
         tampilTabel();
         setCellsAlignment();
@@ -145,6 +147,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
                 data[3] = rs.getString(4);
                 data[4] = rs.getString(5);
                 data[5] = rs.getString(6);
+                data[6] = rs.getString(7);
                 tblModel.addRow(data);
             }
             
@@ -173,7 +176,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
             tblModel.setRowCount(0);
-            String query = "Select * from MAdmin where "+ namakolom +" like '%"+ key +"%'"; 
+            String query = "Select * from ItemProject where "+ namakolom +" like '%"+ key +"%'"; 
             ResultSet rs = state.executeQuery(query);
             while(rs.next()){
                 int nokod = Integer.parseInt(rs.getString(1));
@@ -184,6 +187,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
                 data[3] = rs.getString(4);
                 data[4] = rs.getString(5);
                 data[5] = rs.getString(6);
+                data[6] = rs.getString(7);
                 tblModel.addRow(data);
             }
             rs.close();
@@ -216,8 +220,9 @@ public class MasterItem extends javax.swing.JInternalFrame {
     String kodenya;
     public void getData() {
         row = tabel.getSelectedRow();
-        kodenya = tblModel.getValueAt(tabel.convertRowIndexToModel( row),0).toString();
+        kodenya = tblModel.getValueAt(tabel.convertRowIndexToModel( row),1).toString();
         txtNourut.setText(kodenya);
+        txtNav.setText(kodenya);
         tampil(kodenya);
         
     }
@@ -227,7 +232,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
-            String query = "Select * from ItemProject where NoUrut = '" + kode + "'";
+            String query = "Select * from ItemProject where NoSeri = '" + kode + "'";
             ResultSet rs = state.executeQuery(query);
             while(rs.next()){
                 txtNoseri.setText(rs.getString(2));
@@ -236,7 +241,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
                 txtModel .setText(rs.getString(5));
                 txtSize  .setText(rs.getString(6));  
             }
-            
+            txtNav.setText(rs.getString(2));
             rs.close();
             state.close();
             con.close();
@@ -258,14 +263,14 @@ public class MasterItem extends javax.swing.JInternalFrame {
         
         row--;
         if(row > 0){
-            kdnya = tblModel.getValueAt(row, 0).toString().trim();
+            kdnya = tblModel.getValueAt(row, 1).toString().trim();
             txtNav.setText(kdnya);
             System.err.println("kodenya = "+kdnya);
             tampil(kdnya); 
             tabel.setRowSelectionInterval(row, row);
         }else{
             row = 0;
-            kdnya = tblModel.getValueAt(row, 0).toString().trim();
+            kdnya = tblModel.getValueAt(row, 1).toString().trim();
             txtNav.setText(kdnya);
             System.err.println("kodenya = "+kdnya);
             tampil(kdnya);
@@ -279,14 +284,14 @@ public class MasterItem extends javax.swing.JInternalFrame {
         
         row++;
         if(row < BindList().size()){
-            kdnya = tblModel.getValueAt(row, 0).toString().trim();
+            kdnya = tblModel.getValueAt(row, 1).toString().trim();
             txtNav.setText(kdnya);
             System.err.println("kodenya = "+kdnya);
             tampil(kdnya); 
             tabel.setRowSelectionInterval(row, row);
         }else{
             row = BindList().size() - 1;
-            kdnya = tblModel.getValueAt(row, 0).toString().trim();
+            kdnya = tblModel.getValueAt(row, 1).toString().trim();
             tabel.setRowSelectionInterval(row,row);
             txtNav.setText(kdnya);
             System.err.println("kodenya = "+kdnya);
@@ -301,7 +306,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
-            String query = "Select NoUrut from HOrder order by NoUrut asc";
+            String query = "Select NoUrut from ItemProject order by NoUrut asc";
             ResultSet rs = state.executeQuery(query);
             List<String> list = new ArrayList<String>();
             while(rs.next()){
@@ -315,6 +320,31 @@ public class MasterItem extends javax.swing.JInternalFrame {
         }
         return null;
     }
+    
+    public boolean checkExists(String serial) {
+        ResultSet rs;
+        int x = 0;
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(database, user, pass);
+            Statement state = con.createStatement();
+
+                String query = "Select * from ItemProject where NoSeri = '"+serial+"'";
+                rs = state.executeQuery(query);
+                if(rs.next()){
+                    x = 1;
+                }else{
+                    x = 0;
+                }
+
+        } catch (Exception ex) {
+             System.err.println(ex.getMessage());
+        }
+       
+        return x > 0 ? true : false;
+
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -361,7 +391,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabel = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(153, 204, 255));
+        setBackground(new java.awt.Color(0, 102, 102));
         setTitle("Item Project");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/kproject.png"))); // NOI18N
 
@@ -645,7 +675,7 @@ public class MasterItem extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(42, Short.MAX_VALUE)
+                .addContainerGap(82, Short.MAX_VALUE)
                 .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnUbah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -700,9 +730,9 @@ public class MasterItem extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -769,7 +799,8 @@ public class MasterItem extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnUbahActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
-        
+        String seri = txtNoseri.getText().toString().trim();
+  
         if(txtNoseri.getText().equals("")){
             JOptionPane.showMessageDialog(null,"Nomor Seri tidak boleh kosong","Error", JOptionPane.INFORMATION_MESSAGE);
         }else if(txtSize.getText().equals("")){
@@ -778,8 +809,11 @@ public class MasterItem extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null,"Merk tidak boleh kosong","Error", JOptionPane.INFORMATION_MESSAGE);
         }else if(txtModel.getText().equals("")){
             JOptionPane.showMessageDialog(null,"Model tidak boleh kosong","Error", JOptionPane.INFORMATION_MESSAGE);
+        }else if(checkExists(seri) == true){
+            JOptionPane.showMessageDialog(null,"Nomor seri sudah terdaftar","Error", JOptionPane.INFORMATION_MESSAGE);
         }else{
             try{
+                
                 query.Input_Detil(Kolom(), Data(), "ItemProject");
                 int rowCount = tblModel.getRowCount();
                 for (int i = rowCount - 1; i >= 0; i--) {
@@ -894,9 +928,9 @@ public class MasterItem extends javax.swing.JInternalFrame {
     private javax.swing.table.DefaultTableModel getDefaultTabelModel(){
         return new javax.swing.table.DefaultTableModel(
         new Object[][] {},
-        new String[] {"No Urut", "Nomor Seri", "Produk", "Merk", "Model", "Size"}){
+        new String[] {"No Urut", "Nomor Seri", "Produk", "Merk", "Model", "Size", "No Bukti"}){
             boolean[] canEdit = new boolean[]{
-                false,false,false,false,false,false
+                false,false,false,false,false,false,false
             };
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];

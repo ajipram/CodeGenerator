@@ -561,7 +561,7 @@ public class MenuUtama extends javax.swing.JFrame {
         mKode.setBackground(new java.awt.Color(0, 102, 102));
         mKode.setForeground(new java.awt.Color(255, 255, 255));
         mKode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/mnkode.png"))); // NOI18N
-        mKode.setText("Kode");
+        mKode.setText("Transaksi");
         mKode.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         mKode.setNextFocusableComponent(mPanduan);
 
@@ -627,6 +627,11 @@ public class MenuUtama extends javax.swing.JFrame {
         miTentang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/about.png"))); // NOI18N
         miTentang.setText("Tentang");
         miTentang.setNextFocusableComponent(mHome);
+        miTentang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miTentangActionPerformed(evt);
+            }
+        });
         mPanduan.add(miTentang);
 
         jMenuBar1.add(mPanduan);
@@ -660,7 +665,7 @@ public class MenuUtama extends javax.swing.JFrame {
             try{
                 mMaintenance.setSelected(true);
                 mMaintenance.setVisible(true);
-                mMaintenance.setSize(850, 640);
+                mMaintenance.setSize(1020, 650);
                 Dimension desktopSize = dekstop.getSize();
                 Dimension jInternalFrameSize = mMaintenance.getSize();
                 mMaintenance.setLocation((desktopSize.width - jInternalFrameSize.width)/2,((desktopSize.height- jInternalFrameSize.height))/2);
@@ -736,7 +741,7 @@ public class MenuUtama extends javax.swing.JFrame {
             try{
                 mProject.setSelected(true);
                 mProject.setVisible(true);
-                mProject.setSize(1000, 650);
+                mProject.setSize(1020, 650);
                 Dimension desktopSize = dekstop.getSize();
                 Dimension jInternalFrameSize = mProject.getSize();
                 mProject.setLocation((desktopSize.width - jInternalFrameSize.width)/2,((desktopSize.height- jInternalFrameSize.height))/2);
@@ -755,7 +760,7 @@ public class MenuUtama extends javax.swing.JFrame {
             try{
                 mEmergency.setSelected(true);
                 mEmergency.setVisible(true);
-                mEmergency.setSize(1000, 660);
+                mEmergency.setSize(1100, 660);
                 Dimension desktopSize = dekstop.getSize();
                 Dimension jInternalFrameSize = mEmergency.getSize();
                 mEmergency.setLocation((desktopSize.width - jInternalFrameSize.width)/2,((desktopSize.height- jInternalFrameSize.height))/2);
@@ -858,6 +863,11 @@ public class MenuUtama extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void miTentangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miTentangActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_miTentangActionPerformed
 
     /**
      * @param args the command line arguments

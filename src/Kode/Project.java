@@ -67,6 +67,7 @@ public class Project extends javax.swing.JInternalFrame {
     String data[] = new String[12];
     String dataItem[] = new String[6];
     Fungsi_Query query = new Fungsi_Query();
+    String dataItemTampil[] = new String[6];
     
     String[] kolom  = new String[18];
     String[] isi    = new String[18];
@@ -105,8 +106,7 @@ public class Project extends javax.swing.JInternalFrame {
         
         String strCab = String.valueOf(cmbCabang.getSelectedItem());
         String strMit = String.valueOf(cmbMitra.getSelectedItem());
-        System.out.println("Mitra = "+cmbCabang.getSelectedItem()); 
-        
+        System.out.println("Mitra = "+cmbCabang.getSelectedItem());
         
         isi[0] = lblNoBukti.getText();
         isi[1] = lblTglBukti.getText();
@@ -117,7 +117,7 @@ public class Project extends javax.swing.JInternalFrame {
         isi[6] = txtTelp.getText();
         isi[7] = String.valueOf(cmbKelompok.getSelectedItem());
         isi[8] = txtNoRef.getText();
-        isi[9] = dateRef("dd-MMM-yyyy");
+        isi[9] = dateRef("dd MMM yyyy");
         isi[10] = strCab.substring(0, strCab.indexOf(" : "));
         isi[11] = strCab.substring(5);
         isi[12] = strMit.substring(0, strMit.indexOf(" : "));
@@ -146,7 +146,7 @@ public class Project extends javax.swing.JInternalFrame {
         tabelKode.setAutoCreateRowSorter(true);
         Tabel(tabelKode, new int[]{150,100,100,100,100,100,100,100,100,100,100,100});
         tabelITem.setModel(tblModelItem);
-        TabelItem(tabelITem, new int[]{80,150,150,150,150,100});
+        TabelItem(tabelITem, new int[]{50,100,100,100,70,70});
         //sortTable();
         getCurrentDate();
         txtTahun.setText(tahun);
@@ -172,6 +172,7 @@ public class Project extends javax.swing.JInternalFrame {
     private String dateRef(String format){
         SimpleDateFormat sdf = new SimpleDateFormat(format);
 	String date = sdf.format(tglRef.getDate());
+        System.err.println("date "+date);
         return date;
     }
 
@@ -208,6 +209,7 @@ public class Project extends javax.swing.JInternalFrame {
         }catch(Exception ex){
             System.out.println("tidak ada koneksi "+ex);
 	}
+        System.out.println("nomor "+no);
         return no;
     }
     
@@ -284,7 +286,7 @@ public class Project extends javax.swing.JInternalFrame {
             Statement state = con.createStatement();
             String query = "Select * from Hproject where No_Bukti like '%"+ thn +"%'order by Kd_Cabang asc, Tanggal desc"; 
             ResultSet rs = state.executeQuery(query);
-            
+            System.err.println("query tampil project = "+query);
             while(rs.next()){
                 data[0] = rs.getString(1);
                 data[1] = rs.getString(2);
@@ -298,7 +300,8 @@ public class Project extends javax.swing.JInternalFrame {
                 data[9] = rs.getString(15);
                 data[10] = rs.getString(17);
                 data[11] = rs.getString(18);
-                tblModel.addRow(data);    
+                System.err.println("data 0 = "+rs.getString(1));
+                tblModel.addRow(data);
             }
             rs.close();
             state.close();
@@ -384,6 +387,29 @@ public class Project extends javax.swing.JInternalFrame {
             }
             cmbMitra.addItem("Blank");
             cmbMitra.setSelectedItem("WS : WORKSHOP TAMBUN");
+            rs.close();
+            state.close();
+            con.close();
+        }catch(Exception ex){
+            System.out.println("tidak ada koneksi "+ex);
+	}
+    }
+    
+    private void tampilMitra(String kode){
+        try{
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(database, user, pass);
+            Statement state = con.createStatement();
+            String query = "Select * from MMitra where Kode = '"+kode+"'"; 
+            ResultSet rs = state.executeQuery(query);
+            String kodenya = "", namanya = "";
+            while(rs.next()){
+                kodenya = rs.getString(1);
+                namanya = rs.getString(3);
+                //cmbMitra.addItem(kodenya+" : "+namanya);
+            }
+            //cmbMitra.addItem("Blank");
+            cmbMitra.setSelectedItem(kodenya+" : "+namanya);
             rs.close();
             state.close();
             con.close();
@@ -582,16 +608,19 @@ public class Project extends javax.swing.JInternalFrame {
     }
     
     private void updateItemProject(){
-        String noseri;
+        String noseri, nobukti;
         int rowCount = tblModelItem.getRowCount();
+        System.err.println("row "+rowCount);
         for (int i = rowCount - 1; i >= 0; i--) {
             noseri = tabelITem.getValueAt(i, 0).toString().trim();
+            //nobukti = lblNoBukti.getText().toString().trim();
+            //System.err.println("nobukti "+nobukti);
             query.EditSingle("NoBukti", lblNoBukti.getText(), "ItemProject", "NoUrut",noseri);
         }
         //for(int i = 0; i < tabelITem.getRowCount();i++){    
     }
     
-   
+    
     
     private void Tabel(javax.swing.JTable tb, int lebar[]){
         tb.setAutoResizeMode(tb.AUTO_RESIZE_OFF);
@@ -619,16 +648,6 @@ public class Project extends javax.swing.JInternalFrame {
     }
     private javax.swing.table.DefaultTableModel tblModel = getDefaultTabelModel();
     
-    private void TabelItem(javax.swing.JTable tb, int lebar[]){
-        tb.setAutoResizeMode(tb.AUTO_RESIZE_OFF);
-        int kolom=tb.getColumnCount();
-        for(int i = 0;i<kolom; i++){
-            javax.swing.table.TableColumn tbc = tb.getColumnModel().getColumn(i);
-            tbc.setPreferredWidth(lebar[i]);
-            tb.setRowHeight(17);
-        }
-    }
-    
     
     private javax.swing.table.DefaultTableModel getDefaultTabelModelItem(){
         return new javax.swing.table.DefaultTableModel(
@@ -646,7 +665,15 @@ public class Project extends javax.swing.JInternalFrame {
     
     private javax.swing.table.DefaultTableModel tblModelItem = getDefaultTabelModelItem();
    
-    
+    private void TabelItem(javax.swing.JTable tb, int lebar[]){
+        tb.setAutoResizeMode(tb.AUTO_RESIZE_OFF);
+        int kolom=tb.getColumnCount();
+        for(int i = 0;i<kolom; i++){
+            javax.swing.table.TableColumn tbc = tb.getColumnModel().getColumn(i);
+            tbc.setPreferredWidth(lebar[i]);
+            tb.setRowHeight(17);
+        }
+    }
     
 
     /**
@@ -685,35 +712,36 @@ public class Project extends javax.swing.JInternalFrame {
         btnTambah = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         txtQuantity = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        btnSimpan = new javax.swing.JButton();
-        btnUbah = new javax.swing.JButton();
-        btnBatal = new javax.swing.JButton();
-        btnBatal1 = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         lblNoBukti = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         lblTglBukti = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
+        btnSimpan = new javax.swing.JButton();
+        btnUbah = new javax.swing.JButton();
+        btnBatal = new javax.swing.JButton();
+        btnBatal1 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tabelITem = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelKode = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
-        txtKeyword = new javax.swing.JTextField();
-        cmbCari = new javax.swing.JComboBox<>();
-        jLabel5 = new javax.swing.JLabel();
-        btnCari = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        cmbBulan = new javax.swing.JComboBox<>();
-        txtTahun = new javax.swing.JTextField();
+        jToolBar2 = new javax.swing.JToolBar();
         btnNavFirst = new javax.swing.JButton();
         btnNavPrev = new javax.swing.JButton();
         txtNav = new javax.swing.JTextField();
         btnNavNext = new javax.swing.JButton();
         btnNavLast = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        cmbBulan = new javax.swing.JComboBox<>();
+        txtTahun = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        cmbCari = new javax.swing.JComboBox<>();
+        txtKeyword = new javax.swing.JTextField();
+        btnCari = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tabelITem = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setTitle("Project");
@@ -735,6 +763,7 @@ public class Project extends javax.swing.JInternalFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jPanel4.setBackground(new java.awt.Color(0, 102, 102));
+        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel7.setForeground(new java.awt.Color(204, 255, 255));
         jLabel7.setText("Nama Project");
@@ -841,20 +870,20 @@ public class Project extends javax.swing.JInternalFrame {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel9))
-                        .addGap(40, 40, 40)
+                        .addGap(46, 46, 46)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbCabang, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbMitra, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(cmbMitra, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbCabang, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel12)
                             .addComponent(jLabel13))
-                        .addGap(27, 27, 27)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTelp, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtUP, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(33, 33, 33)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtTelp, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .addComponent(txtUP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -891,6 +920,7 @@ public class Project extends javax.swing.JInternalFrame {
         );
 
         jPanel5.setBackground(new java.awt.Color(0, 102, 102));
+        jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel14.setForeground(new java.awt.Color(204, 255, 255));
         jLabel14.setText("Kelompok");
@@ -975,6 +1005,12 @@ public class Project extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addGap(34, 34, 34)
                         .addComponent(cmbKelompok, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -986,13 +1022,7 @@ public class Project extends javax.swing.JInternalFrame {
                         .addGap(21, 21, 21)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tglRef, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNoRef, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel17)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtNoRef, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -1013,89 +1043,15 @@ public class Project extends javax.swing.JInternalFrame {
                     .addComponent(tglRef, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel17)
-                        .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        btnSimpan.setForeground(new java.awt.Color(0, 153, 153));
-        btnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/ok.png"))); // NOI18N
-        btnSimpan.setText("Simpan");
-        btnSimpan.setEnabled(false);
-        btnSimpan.setMaximumSize(new java.awt.Dimension(110, 36));
-        btnSimpan.setNextFocusableComponent(btnBatal);
-        btnSimpan.setPreferredSize(new java.awt.Dimension(110, 36));
-        btnSimpan.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnSimpanMouseEntered(evt);
-            }
-        });
-        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSimpanActionPerformed(evt);
-            }
-        });
-
-        btnUbah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/edit.png"))); // NOI18N
-        btnUbah.setText("Ubah");
-        btnUbah.setEnabled(false);
-        btnUbah.setPreferredSize(new java.awt.Dimension(100, 36));
-        btnUbah.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUbahActionPerformed(evt);
-            }
-        });
-
-        btnBatal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/batal.png"))); // NOI18N
-        btnBatal.setText("Batal");
-        btnBatal.setEnabled(false);
-        btnBatal.setPreferredSize(new java.awt.Dimension(100, 36));
-        btnBatal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBatalActionPerformed(evt);
-            }
-        });
-
-        btnBatal1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/clear.png"))); // NOI18N
-        btnBatal1.setText("Clear");
-        btnBatal1.setPreferredSize(new java.awt.Dimension(100, 36));
-        btnBatal1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBatal1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnUbah, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBatal1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(10, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnUbah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBatal1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17))
+                .addGap(9, 9, 9))
         );
 
         jPanel8.setBackground(new java.awt.Color(0, 102, 102));
+        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel6.setForeground(new java.awt.Color(204, 255, 255));
         jLabel6.setText("Nomor Bukti :");
@@ -1119,8 +1075,8 @@ public class Project extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblNoBukti, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(lblNoBukti, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
                 .addComponent(jLabel18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblTglBukti, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1140,6 +1096,90 @@ public class Project extends javax.swing.JInternalFrame {
                 .addGap(10, 10, 10))
         );
 
+        jToolBar1.setBackground(new java.awt.Color(0, 102, 102));
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        btnSimpan.setForeground(new java.awt.Color(0, 153, 153));
+        btnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/ok.png"))); // NOI18N
+        btnSimpan.setText("Simpan");
+        btnSimpan.setEnabled(false);
+        btnSimpan.setMaximumSize(new java.awt.Dimension(110, 36));
+        btnSimpan.setNextFocusableComponent(btnBatal);
+        btnSimpan.setPreferredSize(new java.awt.Dimension(110, 36));
+        btnSimpan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSimpanMouseEntered(evt);
+            }
+        });
+        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpanActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnSimpan);
+
+        btnUbah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/edit.png"))); // NOI18N
+        btnUbah.setText("Ubah");
+        btnUbah.setEnabled(false);
+        btnUbah.setPreferredSize(new java.awt.Dimension(100, 36));
+        btnUbah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUbahActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnUbah);
+
+        btnBatal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/batal.png"))); // NOI18N
+        btnBatal.setText("Batal");
+        btnBatal.setEnabled(false);
+        btnBatal.setPreferredSize(new java.awt.Dimension(100, 36));
+        btnBatal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBatalActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnBatal);
+
+        btnBatal1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/clear.png"))); // NOI18N
+        btnBatal1.setText("Clear");
+        btnBatal1.setPreferredSize(new java.awt.Dimension(100, 36));
+        btnBatal1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBatal1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnBatal1);
+
+        tabelITem.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tabelITem.setForeground(new java.awt.Color(0, 102, 102));
+        tabelITem.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Nomor", "Nomor Bukti", "Tanggal", "Admin"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tabelITem.setNextFocusableComponent(txtNamaProject);
+        tabelITem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelITemMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tabelITem);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1147,14 +1187,17 @@ public class Project extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1164,9 +1207,15 @@ public class Project extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)))
+                .addContainerGap())
         );
 
         tabelKode.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -1202,45 +1251,52 @@ public class Project extends javax.swing.JInternalFrame {
         jPanel3.setBackground(new java.awt.Color(0, 102, 102));
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        txtKeyword.setNextFocusableComponent(btnCari);
-        txtKeyword.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                txtKeywordInputMethodTextChanged(evt);
-            }
-        });
+        jToolBar2.setBackground(new java.awt.Color(0, 102, 102));
+        jToolBar2.setFloatable(false);
+        jToolBar2.setRollover(true);
 
-        cmbCari.setForeground(new java.awt.Color(0, 102, 102));
-        cmbCari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Bukti", "Customer", "Tanggal" }));
-        cmbCari.setNextFocusableComponent(txtKeyword);
-
-        jLabel5.setForeground(new java.awt.Color(204, 255, 255));
-        jLabel5.setText("Cari :");
-
-        btnCari.setForeground(new java.awt.Color(0, 153, 153));
-        btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/cari.png"))); // NOI18N
-        btnCari.setText("Cari");
-        btnCari.setMaximumSize(new java.awt.Dimension(85, 35));
-        btnCari.setMinimumSize(new java.awt.Dimension(85, 35));
-        btnCari.setNextFocusableComponent(tabelKode);
-        btnCari.setPreferredSize(new java.awt.Dimension(85, 35));
-        btnCari.addActionListener(new java.awt.event.ActionListener() {
+        btnNavFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nav_first.png"))); // NOI18N
+        btnNavFirst.setEnabled(false);
+        btnNavFirst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCariActionPerformed(evt);
+                btnNavFirstActionPerformed(evt);
             }
         });
+        jToolBar2.add(btnNavFirst);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/batal.png"))); // NOI18N
-        jButton1.setText("Refresh");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnNavPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nav_prev.png"))); // NOI18N
+        btnNavPrev.setEnabled(false);
+        btnNavPrev.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnNavPrevActionPerformed(evt);
             }
         });
+        jToolBar2.add(btnNavPrev);
+
+        txtNav.setForeground(new java.awt.Color(0, 102, 102));
+        jToolBar2.add(txtNav);
+
+        btnNavNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nav_next.png"))); // NOI18N
+        btnNavNext.setEnabled(false);
+        btnNavNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNavNextActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(btnNavNext);
+
+        btnNavLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nav_last.png"))); // NOI18N
+        btnNavLast.setEnabled(false);
+        btnNavLast.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNavLastActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(btnNavLast);
 
         jLabel8.setForeground(new java.awt.Color(204, 255, 255));
         jLabel8.setText("Bulan");
+        jToolBar2.add(jLabel8);
 
         cmbBulan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember", " " }));
         cmbBulan.addActionListener(new java.awt.event.ActionListener() {
@@ -1248,6 +1304,7 @@ public class Project extends javax.swing.JInternalFrame {
                 cmbBulanActionPerformed(evt);
             }
         });
+        jToolBar2.add(cmbBulan);
 
         txtTahun.addInputMethodListener(new java.awt.event.InputMethodListener() {
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
@@ -1261,40 +1318,49 @@ public class Project extends javax.swing.JInternalFrame {
                 txtTahunKeyTyped(evt);
             }
         });
+        jToolBar2.add(txtTahun);
 
-        btnNavFirst.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nav_first.png"))); // NOI18N
-        btnNavFirst.setEnabled(false);
-        btnNavFirst.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavFirstActionPerformed(evt);
+        jLabel5.setForeground(new java.awt.Color(204, 255, 255));
+        jLabel5.setText("Cari :");
+        jToolBar2.add(jLabel5);
+
+        cmbCari.setForeground(new java.awt.Color(0, 102, 102));
+        cmbCari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No Bukti", "Customer", "Tanggal" }));
+        cmbCari.setNextFocusableComponent(txtKeyword);
+        jToolBar2.add(cmbCari);
+
+        txtKeyword.setNextFocusableComponent(btnCari);
+        txtKeyword.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                txtKeywordInputMethodTextChanged(evt);
             }
         });
+        jToolBar2.add(txtKeyword);
 
-        btnNavPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nav_prev.png"))); // NOI18N
-        btnNavPrev.setEnabled(false);
-        btnNavPrev.addActionListener(new java.awt.event.ActionListener() {
+        btnCari.setForeground(new java.awt.Color(0, 153, 153));
+        btnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/cari.png"))); // NOI18N
+        btnCari.setText("Cari");
+        btnCari.setMaximumSize(new java.awt.Dimension(85, 35));
+        btnCari.setMinimumSize(new java.awt.Dimension(85, 35));
+        btnCari.setNextFocusableComponent(tabelKode);
+        btnCari.setPreferredSize(new java.awt.Dimension(85, 35));
+        btnCari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavPrevActionPerformed(evt);
+                btnCariActionPerformed(evt);
             }
         });
+        jToolBar2.add(btnCari);
 
-        txtNav.setForeground(new java.awt.Color(0, 102, 102));
-
-        btnNavNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nav_next.png"))); // NOI18N
-        btnNavNext.setEnabled(false);
-        btnNavNext.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/batal.png"))); // NOI18N
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavNextActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
-
-        btnNavLast.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/nav_last.png"))); // NOI18N
-        btnNavLast.setEnabled(false);
-        btnNavLast.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavLastActionPerformed(evt);
-            }
-        });
+        jToolBar2.add(jButton1);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -1302,59 +1368,15 @@ public class Project extends javax.swing.JInternalFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbCari, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbBulan, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(txtTahun, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnNavFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(7, 7, 7)
-                        .addComponent(btnNavPrev, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNav, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnNavNext, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnNavLast, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 837, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnNavLast, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnNavFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnNavPrev, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnNavNext, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(cmbBulan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel8))
-                    .addComponent(txtTahun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jLabel1.setBackground(new java.awt.Color(0, 153, 153));
@@ -1363,35 +1385,6 @@ public class Project extends javax.swing.JInternalFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Project");
         jLabel1.setOpaque(true);
-
-        tabelITem.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        tabelITem.setForeground(new java.awt.Color(0, 102, 102));
-        tabelITem.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Nomor", "Nomor Bukti", "Tanggal", "Admin"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        tabelITem.setNextFocusableComponent(txtNamaProject);
-        tabelITem.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabelITemMouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(tabelITem);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1405,15 +1398,15 @@ public class Project extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 803, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 953, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1426,12 +1419,10 @@ public class Project extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -1447,8 +1438,9 @@ public class Project extends javax.swing.JInternalFrame {
     private void tabelKodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelKodeMouseClicked
         if(evt.getClickCount()==2){
             getData();
+            getItem();
             btnBatal.setEnabled(true);
-            btnUbah.setEnabled(true);
+            btnUbah.setEnabled(false);
             btnSimpan.setEnabled(false);
             btnCariCustomer.setEnabled(false);
         }
@@ -1495,15 +1487,20 @@ public class Project extends javax.swing.JInternalFrame {
             try{
                 generateNoBukti();
                 query.Input_Detil(Kolom(), Data(), "Hproject");
-                updateItemProject();
-                
+                String getStatusInput = query.getStatusInput();
+                if(getStatusInput.equals("Sukses")){
+                    updateItemProject();
+                    tampilKode();
+                }else{
+                    JOptionPane.showMessageDialog(null,"Simpan Gagal","Error", JOptionPane.INFORMATION_MESSAGE);
+                }
                 //generateNoBukti();
                 
 //                int rowCount = tblModel.getRowCount();
 //                for (int i = rowCount - 1; i >= 0; i--) {
 //                    tblModel.removeRow(i);
 //                }
-                tampilKode();
+                
                 
             }catch(Exception e){
                 System.err.println("errorr"+e.getMessage());
@@ -1618,8 +1615,12 @@ public class Project extends javax.swing.JInternalFrame {
                 dataItem[4] = popItemProject.getModel();
                 dataItem[5] = popItemProject.getSizenya();
                 for(int i = 0; i < tabelITem.getRowCount();i++){
-                    list.add(tabelITem.getValueAt(i, 1).toString().trim());
-                    System.err.println("list "+list.toString());
+                    if(tabelITem.getRowCount() > 0){
+                        list.add(tabelITem.getValueAt(i, 1).toString().trim());
+                        System.err.println("list "+list.toString());
+                    }else{
+                        System.err.println("list kosong"+list.toString());
+                    }  
                 }
                 
                 if(list.contains(noserinya)){
@@ -1742,12 +1743,69 @@ public class Project extends javax.swing.JInternalFrame {
         tampil(kodenya);
     }
     
+    
+    public void getItem(){
+        
+        String nobuk = lblNoBukti.getText().toString().trim();
+        try{
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(database, user, pass);
+            Statement state = con.createStatement();
+            String query = "Select * from ItemProject where NoBukti = '" + nobuk + "'"; 
+            System.err.println("data 11215555   "+query);
+            ResultSet rs = state.executeQuery(query);
+            int rowCount = tblModelItem.getRowCount();
+                for (int i = rowCount - 1; i >= 0; i--) {
+                    tblModelItem.removeRow(i);
+                }
+            while(rs.next()){
+                
+//                int nokod = 0;
+//                popItemProject.getData();
+//                if(popItemProject.getNo()== null){
+//                    System.err.println("nokod kosong");
+//                }else{
+//                nokod = Integer.parseInt(popItemProject.getNo());
+//                System.err.println("nokod "+nokod);
+//                }
+//                String nokode = String.format("%02d", nokod);
+//                String noserinya = popItemProject.getNoseri();
+//                System.err.println("noserinya "+noserinya);
+                List<String> list = new ArrayList<String>();
+                dataItemTampil[0] = rs.getString(1);
+                dataItemTampil[1] = rs.getString(2);
+                dataItemTampil[2] = rs.getString(3);
+                dataItemTampil[3] = rs.getString(4);
+                dataItemTampil[4] = rs.getString(5);
+                dataItemTampil[5] = rs.getString(6);
+                System.err.println("data 11215555"+rs.getString(2));
+                for(int i = 0; i < tabelITem.getRowCount();i++){
+                    if(tabelITem.getRowCount() > 0){
+                        list.add(tabelITem.getValueAt(i, 1).toString().trim());
+                        System.err.println("list "+list.toString());
+                    }else{
+                        System.err.println("list kosong"+list.toString());
+                    }  
+                }
+                tblModelItem.addRow(dataItemTampil);
+            }
+            
+            rs.close();
+            state.close();
+            con.close();
+        }catch(Exception ex){
+            System.out.println("tidak ada koneksi "+ex.getStackTrace());
+            ex.printStackTrace();
+	}
+    }
+    
     public void tampil(String kode){
         try{
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
             String query = "Select * from Hproject where No_Bukti = '" + kode + "'"; 
+            System.err.println("query tampil "+query);
             ResultSet rs = state.executeQuery(query);
             while(rs.next()){
                 lblNoBukti.setText(rs.getString(1));
@@ -1758,10 +1816,11 @@ public class Project extends javax.swing.JInternalFrame {
                 txtTelp.setText(rs.getString(7));
                 cmbKelompok.setSelectedItem(rs.getString(8));
                 txtNoRef.setText(rs.getString(9));
-                java.util.Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s").parse(rs.getString(10));
-                tglRef.setDate(date);
+                //java.util.Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s").parse(rs.getString(10));
+                tglRef.setDate(Date.valueOf(rs.getString(10)));
                 txtQuantity.setText(rs.getString(15));
                 cmbCabang.setSelectedItem(rs.getString(11)+" :"+rs.getString(12));
+                System.err.println("kode cabang "+rs.getString(11));
                 cmbMitra.setSelectedItem(rs.getString(13)+" :"+rs.getString(14));
             }
             
@@ -1813,10 +1872,11 @@ public class Project extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar jToolBar2;
     private javax.swing.JLabel lblNoBukti;
     private javax.swing.JLabel lblTglBukti;
     private javax.swing.JTable tabelITem;

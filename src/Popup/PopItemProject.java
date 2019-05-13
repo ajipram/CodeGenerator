@@ -69,11 +69,9 @@ public class PopItemProject extends javax.swing.JDialog {
             Class.forName(driver);
             Connection con = DriverManager.getConnection(database, user, pass);
             Statement state = con.createStatement();
-            String query = "Select * from ItemProject where NoBukti is null or NoBukti = ''"; 
+            String query = "Select * from ItemProject where NoBukti is null or NoBukti = '' order by NoUrut Asc"; 
             ResultSet rs = state.executeQuery(query);
-            if(rs.next()==false){
-                JOptionPane.showMessageDialog(null,"Tidak ada data","Info",JOptionPane.INFORMATION_MESSAGE);
-            }else{
+            
             while(rs.next()){
                 data[0] = rs.getString(1);
                 data[1] = rs.getString(2);
@@ -83,10 +81,7 @@ public class PopItemProject extends javax.swing.JDialog {
                 data[5] = rs.getString(6);
                 
                 tblModel.addRow(data);
-            }
-            
-                
-            }
+            } 
             rs.close();
             state.close();
             con.close();
